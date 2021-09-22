@@ -1,2 +1,2 @@
-FROM alpine:3.9
+FROM alpine:3.14.2
 RUN apk --update add --no-cache fcgi

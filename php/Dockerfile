@@ -17,7 +17,7 @@ RUN pecl install redis \
 RUN pecl install Mosquitto-beta \
     && docker-php-ext-enable mosquitto
 
-RUN git clone https://github.com/emrysr/emoncms.git ${EMONCMS_WEB_DIR} \
+RUN git clone https://github.com/emoncms/emoncms.git -b service_runner_env_support ${EMONCMS_WEB_DIR} \
     && git clone https://github.com/emoncms/dashboard.git ${EMONCMS_WEB_DIR}/Modules/dashboard \
     && git clone https://github.com/emoncms/graph.git ${EMONCMS_WEB_DIR}/Modules/graph \
     && git clone https://github.com/emoncms/device.git ${EMONCMS_WEB_DIR}/Modules/device \
