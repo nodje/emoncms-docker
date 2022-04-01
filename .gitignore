@@ -1,3 +1,5 @@
 emoncms/
 .docker-env
 *~
+/test/emon/
+/test/redis-data/
