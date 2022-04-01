@@ -1,0 +1,73 @@
+version: '3'
+
+services:
+  # PHP & apache container using offical Docker PHP iamge
+  emoncms:
+    # If pre-built image from docker hub exists then use that (docker pull openenergymonitor/emoncms:latest) if not Buildcontainer see Dockerflile
+    image: openenergymonitor/emoncms:latest
+    build: .
+    restart: always
+    container_name: "emoncms"
+    #user: 2008:2008
+    environment:
+      - TZ=Europe/Paris
+      #DB
+      - MYSQL_HOST=emondb
+      - MYSQL_DATABASE=emoncms
+      - MYSQL_USER=emoncms
+      - MYSQL_PASSWORD=/run/secrets/emondb_password
+      - MYSQL_PORT=3306
+      #redis
+      - REDIS_ENABLED=true
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - REDIS_PREFIX='emoncms'
+      # MQTT
+      - MQTT_ENABLED=true
+      - MQTT_HOST=localhost
+      - MQTT_USER=emoncms
+      - MQTT_PASSWORD=/run/secrets/emondb_password
+      - MQTT_BASETOPIC=emon
+      # Feed
+      - PHPFINA_DIR=/var/opt/emoncms/phpfina/
+      - PHPTIMESERIES_DIR=/var/opt/emoncms/phptimeseries/
+    secrets:
+      - emondb_password
+    volumes:
+      - /mnt/data/emon/emon-phpfina:/var/opt/emoncms/phpfina
+      - /mnt/data/emon/emon-phptimeseries:/var/opt/emoncms/phptimeseries
+      # Disable access to /php-info.php for security reasons
+      - /dev/null:/var/www/html/php-info.php
+    networks:
+      - default
+      - redis
+      - emon
+
+  emondb:
+    image: mariadb:latest
+    restart: always
+    container_name: "emondb"
+    user: 2008:2008
+    environment:
+      - TZ=Europe/Paris
+      - MYSQL_DATABASE=emoncms
+      - MYSQL_USER=emoncms
+      - MYSQL_PASSWORD=/run/secrets/emondb_password
+      - MYSQL_ROOT_PASSWORD=/run/secrets/emondb_root_password
+      - MYSQL_ROOT_HOST=localhost
+      #- MYSQL_INITDB_SKIP_TZINFO=true
+    secrets:
+      - emondb_root_password
+      - emondb_password
+    volumes:
+      - /mnt/data/emon/emon-db-data:/var/lib/mysql
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+    networks:
+      - emon
+
+networks:
+  emon:
+    external: false

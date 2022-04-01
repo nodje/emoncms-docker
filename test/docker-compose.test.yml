@@ -1,0 +1,52 @@
+version: '3'
+
+secrets:
+  emondb_root_password:
+    file: ./emondb_root_password.txt
+  emondb_password:
+    file: ./emondb_password.txt
+
+services:
+  emoncms:
+    extends:
+      file: ../emoncms-docker-compose.yml
+      service: emoncms
+    #user: "501:20"
+    ports:
+      - 80:80
+    volumes:
+      - $PWD/emon/emon-phpfina:/var/opt/emoncms/phpfina
+      - $PWD/emon/emon-phptimeseries:/var/opt/emoncms/phptimeseries
+    depends_on:
+      - emondb
+      - redis
+
+  emondb:
+    extends:
+      file: ../emoncms-docker-compose.yml
+      service: emondb
+    user: "501:20"
+    volumes:
+      - $PWD/emon/emon-db-data:/var/lib/mysql
+
+  redis:
+    image: redis:latest
+    restart: always
+    container_name: "redis"
+    user: 2009:2009
+    environment:
+      - TZ=Europe/Paris
+    volumes:
+      - $PWD/redis-data:/data
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+    networks:
+      - redis
+
+networks:
+  emon:
+    external: false
+  redis:
+    external: false
