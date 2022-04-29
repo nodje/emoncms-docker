@@ -23,14 +23,13 @@ services:
       - REDIS_PREFIX='emoncms'
       # MQTT
       - MQTT_ENABLED=true
-      - MQTT_HOST=localhost
+      - MQTT_HOST=mosquitto
       - MQTT_USER=emoncms
-      - MQTT_PASSWORD=/run/secrets/emondb_password
+      #- MQTT_PASSWORD=/run/secrets/emondb_password
       - MQTT_BASETOPIC=emon
       # Feed
       - PHPFINA_DIR=/var/opt/emoncms/phpfina/
       - PHPTIMESERIES_DIR=/var/opt/emoncms/phptimeseries/
-    command: /sbin/init
     secrets:
       - emondb_password
     volumes:
@@ -38,9 +37,6 @@ services:
       - /mnt/data/emon/emon-phptimeseries:/var/opt/emoncms/phptimeseries
       # Disable access to /php-info.php for security reasons
       - /dev/null:/var/www/html/php-info.php
-      - /sys/fs/cgroup:/sys/fs/cgroup:ro
-    cap_add:
-      - SYS_ADMIN
 
   emondb:
     image: mariadb:10.8.2
