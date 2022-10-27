@@ -3,7 +3,7 @@ version: '3'
 services:
   emoncms:
     # If pre-built image from docker hub exists then use that (docker pull openenergymonitor/emoncms:latest) if not Buildcontainer see Dockerflile
-    image: openenergymonitor/emoncms:10.8.5
+make #    image: openenergymonitor/emoncms:10.8.5
     build: .
     restart: always
     container_name: "emoncms"
