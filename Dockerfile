@@ -11,7 +11,10 @@ RUN apt-get update && apt-get install -y \
               git-core 
 
 # Enable PHP modules
-RUN docker-php-ext-install -j$(nproc) mysqli curl json gettext
+RUN docker-php-ext-install -j$(nproc) mysqli
+RUN docker-php-ext-install -j$(nproc) curl
+RUN docker-php-ext-install -j$(nproc) json
+RUN docker-php-ext-install -j$(nproc) gettext
 RUN pecl install redis \
   \ && docker-php-ext-enable redis
 RUN pecl install Mosquitto-beta \
@@ -32,12 +35,12 @@ RUN a2ensite emoncms
 # ADD ./emoncms /var/www/html
 
 # Clone in master Emoncms repo & modules - overwritten in development with local FS files
-RUN mkdir /var/www/emoncms
-RUN git clone https://github.com/emoncms/emoncms.git /var/www/emoncms
-RUN git clone https://github.com/emoncms/dashboard.git /var/www/emoncms/Modules/dashboard
-RUN git clone https://github.com/emoncms/graph.git /var/www/emoncms/Modules/graph
-RUN git clone https://github.com/emoncms/app.git /var/www/emoncms/Modules/app
-RUN git clone https://github.com/emoncms/device.git /var/www/emoncms/Modules/device
+#.RUN mkdir /var/www/emoncms
+RUN git clone https://github.com/emoncms/emoncms.git --branch 11.2.3 /var/www/emoncms
+RUN git clone https://github.com/emoncms/dashboard.git --branch 2.3.3 /var/www/emoncms/Modules/dashboard
+RUN git clone https://github.com/emoncms/graph.git --branch 2.2.3 /var/www/emoncms/Modules/graph
+RUN git clone https://github.com/emoncms/app.git --branch 2.6.7 /var/www/emoncms/Modules/app
+RUN git clone https://github.com/emoncms/device.git --branch 2.2.0 /var/www/emoncms/Modules/device
 
 COPY docker.settings.ini /var/www/emoncms/settings.ini
 
