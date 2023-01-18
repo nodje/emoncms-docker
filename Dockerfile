@@ -36,7 +36,7 @@ RUN a2ensite emoncms
 
 # Clone in master Emoncms repo & modules - overwritten in development with local FS files
 #.RUN mkdir /var/www/emoncms
-RUN git clone https://github.com/emoncms/emoncms.git --branch 11.2.3 /var/www/emoncms
+RUN git clone https://github.com/emoncms/emoncms.git --branch 11.3.0 /var/www/emoncms
 RUN git clone https://github.com/emoncms/dashboard.git --branch 2.3.3 /var/www/emoncms/Modules/dashboard
 RUN git clone https://github.com/emoncms/graph.git --branch 2.2.3 /var/www/emoncms/Modules/graph
 RUN git clone https://github.com/emoncms/app.git --branch 2.6.7 /var/www/emoncms/Modules/app
